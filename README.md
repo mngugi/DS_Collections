@@ -30,3 +30,5 @@ Anscombe_Dt.head()
 * **ci:** Confidence interval for the regression estimate. None in this case.
 * **height:** Height (in inches) of each facet.
 * **scatter_kws:** Additional keyword arguments to pass to plt.scatter and plt.plot.
+
+  ---
