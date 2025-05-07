@@ -50,9 +50,6 @@ DS_Collections/
 
 ---
 
-
----
-
 ## 🎯 Purpose
 
 This repository serves as a learning and reference resource for:
