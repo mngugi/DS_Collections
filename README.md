@@ -1,5 +1,8 @@
 ## Welcome to the DS_Collections wiki!
 
+
+---
+
 ### Seaborn_Visualizations.ipynb
 
 **Code**
