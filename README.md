@@ -23,17 +23,29 @@ Welcome to **DS_Collections**, a curated collection of data science projects and
 
 DS_Collections/ 
 ├── .jupyter/ 
+
 ├── Electric_Size_Market_.ipynb 
+
 ├── MLLearningWithPython.ipynb 
+
 ├── Seaborn_Visualizations.ipynb 
+
 ├── Sequential_model.ipynb 
+
 ├── Timeseriesplot.ipynb 
+
 ├── Yoro_vs_Man_united_Center_Backs.ipynb 
+
 ├── linearRegression.ipynb 
+
 ├── lineplot.ipynb 
+
 ├── mnistdataset.ipynb 
+
 ├── tensorTest.ipynb 
+
 ├── LICENSE 
+
 └── README.md
 
 ---
