@@ -96,7 +96,6 @@ For any inquiries or discussions, please open an issue on the repository.
 
 ## 📁 Repository Structure
 
-
 ---
 
 ### Seaborn_Visualizations.ipynb
