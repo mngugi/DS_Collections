@@ -130,3 +130,64 @@ Anscombe_Dt.head()
 * **scatter_kws:** Additional keyword arguments to pass to plt.scatter and plt.plot.
 
   ---
+
+---
+title: "Ice Cream Sales Regression Model"
+description: "Linear regression analysis of the relationship between temperature and ice cream sales using the ice_sales.csv dataset."
+author: "Peter Ngugi"
+date: 2025-10-28
+project: "Regression Models"
+dataset:
+  file_name: "ice_sales.csv"
+  shape: [12, 3]
+  columns:
+    - name: "Temperature (x)"
+      type: int64
+      role: independent_variable
+      description: "Represents the temperature in degrees used as the predictor variable."
+    - name: "Ice cream sales (y)"
+      type: int64
+      role: dependent_variable
+      description: "Actual number of ice cream sales corresponding to each temperature."
+    - name: "Predicted Sales ('Y)"
+      type: int64
+      role: predicted_variable
+      description: "Existing predicted values from an earlier or external model."
+  missing_values:
+    Temperature (x): 0
+    Ice cream sales (y): 0
+    "Predicted Sales ('Y)": 0
+  notes: "Dataset is clean, numeric, and ready for regression modeling."
+
+analysis_plan:
+  objective: "To model the relationship between temperature and ice cream sales."
+  model_type: "Simple Linear Regression"
+  target_variable: "Ice cream sales (y)"
+  predictor_variable: "Temperature (x)"
+  alternative_model: "Compare regression predictions to 'Predicted Sales (Y)' to evaluate model performance."
+  steps:
+    - "Load and explore dataset."
+    - "Visualize data (scatter plot of temperature vs sales)."
+    - "Fit a linear regression model."
+    - "Evaluate performance using R², MAE, and RMSE."
+    - "Plot regression line over actual data."
+  libraries_used:
+    - pandas
+    - scikit-learn
+    - matplotlib
+    - numpy
+
+expected_output:
+  - "Regression equation: y = m*x + b"
+  - "Correlation coefficient and R² value."
+  - "Residual plot for model diagnostics."
+  - "Comparison chart: Actual Sales vs Predicted Sales."
+  - "Statistical metrics showing accuracy and error rate."
+
+comments:
+  - "No missing or invalid data detected."
+  - "Linear relationship expected between temperature and sales."
+  - "Dataset size (12 samples) is small; model will demonstrate linear fitting rather than robust forecasting."
+  - "Future work: Expand dataset with more temperature points for stronger generalization."
+---
+
