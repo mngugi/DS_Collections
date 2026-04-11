@@ -1,125 +1,126 @@
 from pysimverse import Drone
-
 import cv2
-
-import keyboard
-
 import time
+from pynput import keyboard
 
-# Initialize the drone
+# ------------------------
+# Keyboard handling
+# ------------------------
+keys = set()
 
+def on_press(key):
+    try:
+        keys.add(key.char)
+    except:
+        pass
+
+def on_release(key):
+    try:
+        keys.discard(key.char)
+    except:
+        pass
+
+listener = keyboard.Listener(on_press=on_press, on_release=on_release)
+listener.start()
+
+# ------------------------
+# Drone setup
+# ------------------------
 drone = Drone()
-
 drone.connect()
 
 drone.streamon()
-
-# Variables for drone state
-
-fb_speed = 0  # Forward/Backward speed
-
-lr_speed = 0  # Left/Right speed
-
-ud_speed = 0  # Up/Down speed
-
-yaw_speed = 0  # Yaw (rotation) speed
-
-speed = 50  # Movement speed
-
-screenshot_effect_duration = 0.3  # Duration of flash effect (seconds)
-
-last_screenshot_time = 0  # Store time of last screenshot
+time.sleep(2)  # IMPORTANT: allow stream to initialize
 
 drone.take_off()
+time.sleep(2)
+
+speed = 50
+fail_count = 0
 
 try:
-
     while True:
 
+        # ------------------------
+        # Get frame
+        # ------------------------
         frame, is_success = drone.get_frame()
 
-        if is_success:
-            frame = cv2.resize(frame, (360, 240))
+        if not is_success or frame is None:
+            fail_count += 1
+            print(f"Frame decode failed: {fail_count}")
 
-            cv2.imshow("Image", frame)
+            # Auto-restart stream if too many failures
+            if fail_count > 15:
+                print("Restarting video stream...")
+                drone.streamoff()
+                time.sleep(1)
+                drone.streamon()
+                time.sleep(2)
+                fail_count = 0
 
-            cv2.waitKey(1)
+            time.sleep(0.05)
+            continue
 
-            # Reset speeds
+        fail_count = 0  # reset on success
 
+        # ------------------------
+        # Display frame
+        # ------------------------
+        frame = cv2.resize(frame, (360, 240))
+        cv2.imshow("Drone Feed", frame)
+
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+
+        # ------------------------
+        # Reset speeds
+        # ------------------------
         fb_speed = 0
-
         lr_speed = 0
-
         ud_speed = 0
-
         yaw_speed = 0
 
-        camera_angle = 0
-
-        # Check for key presses and update speeds
-
-        if keyboard.is_pressed('w'):  # Move forward
-
+        # ------------------------
+        # Controls
+        # ------------------------
+        if 'w' in keys:
             fb_speed = speed
-
-        if keyboard.is_pressed('s'):  # Move backward
-
+        if 's' in keys:
             fb_speed = -speed
-
-        if keyboard.is_pressed('a'):  # Move left
-
+        if 'a' in keys:
             lr_speed = -speed
-
-        if keyboard.is_pressed('d'):  # Move right
-
+        if 'd' in keys:
             lr_speed = speed
-
-        if keyboard.is_pressed('i'):  # Move up
-
+        if 'i' in keys:
             ud_speed = speed
-
-        if keyboard.is_pressed('k'):  # Move down
-
+        if 'k' in keys:
             ud_speed = -speed
+        if 'j' in keys:
+            yaw_speed = -50
+        if 'l' in keys:
+            yaw_speed = 50
 
-        if keyboard.is_pressed('j'):  # Rotate left (yaw)
-
-            yaw_speed = -0.5
-
-        if keyboard.is_pressed('l'):  # Rotate right (yaw)
-
-            yaw_speed = 0.5
-
-        if keyboard.is_pressed('t'):  # Rotate up (yaw)
-
-            camera_angle = -10
-
-        if keyboard.is_pressed('g'):  # Rotate down (yaw)
-
-            camera_angle = 10
-
-        # Capture a screenshot when z is pressed
-
-        if keyboard.is_pressed("z"):
+        # ------------------------
+        # Screenshot
+        # ------------------------
+        if 'z' in keys:
             timestamp = time.strftime("%Y%m%d_%H%M%S")
-
             filename = f"screenshot_{timestamp}.jpg"
-
             cv2.imwrite(filename, frame)
+            print(f"Saved {filename}")
+            time.sleep(0.3)  # debounce
 
-            print(f"Screenshot saved as {filename}")
-
-        # Send RC control commands to the drone
-
+        # ------------------------
+        # Send RC control
+        # ------------------------
         drone.send_rc_control(lr_speed, fb_speed, ud_speed, yaw_speed)
 
-        # Small delay to avoid overwhelming the system
-
-        time.sleep(0.05)
-
-
+        time.sleep(0.03)
 
 except KeyboardInterrupt:
+    print("Landing...")
 
-    print("Drone landed safely. Exiting...")
+finally:
+    drone.land()
+    cv2.destroyAllWindows()
